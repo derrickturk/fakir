@@ -10,12 +10,12 @@ def main(argv: List[str]) -> int:
 
     formation = animal + fixed(' ') + geo
 
-    area = normal(40, 10)
-    height = uniform(10, 100)
+    area = normal(40, 10).lock()
+    height = uniform(10, 100).lock()
     volume = area * height
 
     # durrr need to think through monadic binds here...
-    phase = choice(['Oil', 'Gas'])
+    phase = choice(['Oil', 'Gas']).lock()
     price = ifelse(phase == fixed('Oil'),
         uniform(30, 60),
         uniform(1.5, 4.5)
@@ -26,6 +26,9 @@ def main(argv: List[str]) -> int:
     r = Random(12345)
     for i in range(100):
         print(row.generate(r))
+        area.clear()
+        height.clear()
+        phase.clear()
 
     return 0
 

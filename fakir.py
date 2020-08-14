@@ -2,7 +2,7 @@ from random import Random
 from abc import ABC, abstractmethod
 import operator
 
-from typing import Any, Callable, Generic, List, Optional, Tuple, TypeVar
+from typing import cast, Any, Callable, Generic, List, Optional, Tuple, TypeVar
 
 _T = TypeVar('_T')
 _U = TypeVar('_U')
@@ -17,6 +17,9 @@ class Fakir(ABC, Generic[_T]):
 
     def bind(self, f: Callable[[_T], 'Fakir[_U]']) -> 'Fakir[_U]':
         return FnFakir(lambda r: f(self.generate(r)).generate(r))
+
+    def lock(self) -> 'LockedFakir[_T]':
+        return LockedFakir(self)
 
     def __lt__(self, other: 'Fakir[Any]') -> 'Fakir[Any]':
         return Fakir.lift(operator.lt, self, other)
@@ -146,6 +149,23 @@ class PermuteFakir(Fakir[List[_T]]):
 
     def generate(self, r: Random) -> List[_T]:
         return r.sample(self._choices, self._choose)
+
+class LockedFakir(Fakir[_T]):
+    def __init__(self, fakir: Fakir[_T]):
+        self._fakir = fakir
+        self._fixed = False
+        self._val: Optional[_T] = None
+
+    def generate(self, r: Random) -> _T:
+        if self._fixed:
+            return cast(_T, self._val)
+        self._val = self._fakir.generate(r)
+        self._fixed = True
+        return self._val
+
+    def clear(self):
+        self._fixed = False
+        self._val = None
 
 def fixed(val: _T) -> Fakir[_T]:
     return ConstFakir(val)
