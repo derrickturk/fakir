@@ -10,7 +10,9 @@ def main(argv: List[str]) -> int:
 
     formation = animal + fixed(' ') + geo
 
-    area = normal(40, 10).lock()
+    area = normal(40, 10)
+    some_other_area = area
+    area = area.lock()
     height = uniform(10, 100).lock()
     volume = area * height
 
@@ -21,7 +23,7 @@ def main(argv: List[str]) -> int:
         uniform(1.5, 4.5)
     )
 
-    row = tupled(formation, area, height, volume, phase, price)
+    row = tupled(formation, area, height, volume, phase, price, some_other_area)
 
     r = Random(12345)
     for i in range(100):

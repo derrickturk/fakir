@@ -163,7 +163,7 @@ class LockedFakir(Fakir[_T]):
         self._fixed = True
         return self._val
 
-    def clear(self):
+    def clear(self) -> None:
         self._fixed = False
         self._val = None
 

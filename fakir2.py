@@ -1,7 +1,9 @@
 from random import Random
-from abc import ABC, abstractmethod
+from copy import deepcopy
+from abc import ABC
 import operator
 
+from typing import cast
 from typing import Any, Callable, Dict, Generic, List, Optional, Tuple, TypeVar
 
 _T = TypeVar('_T')
@@ -12,7 +14,7 @@ class Fakir(ABC, Generic[_T]):
     def _generate(self, r: Random, cache: Dict[int, Any]) -> _T:
         self_id = id(self)
         if self_id in cache:
-            return cache[self_id]
+            return cast(_T, cache[self_id])
         val = self.generate1(r)
         cache[self_id] = val
         return val
@@ -29,6 +31,10 @@ class Fakir(ABC, Generic[_T]):
     def bind(self, f: Callable[[_T], 'Fakir[_U]']) -> 'Fakir[_U]':
         return FnFakir(
           lambda r, cache: f(self._generate(r, cache))._generate(r, cache))
+
+    # an independent draw from the same distribution
+    def clone(self) -> 'Fakir[_T]':
+        return deepcopy(self)
 
     def __lt__(self, other: 'Fakir[Any]') -> 'Fakir[Any]':
         return Fakir.lift(operator.lt, self, other)
