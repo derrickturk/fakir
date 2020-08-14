@@ -16,7 +16,6 @@ def main(argv: List[str]) -> int:
     height = uniform(10, 100).lock()
     volume = area * height
 
-    # durrr need to think through monadic binds here...
     phase = choice(['Oil', 'Gas']).lock()
     price = ifelse(phase == fixed('Oil'),
         uniform(30, 60),
