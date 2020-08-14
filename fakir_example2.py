@@ -20,7 +20,7 @@ def main(argv: List[str]) -> int:
                 uniform(30, 60) if p == 'Oil' else uniform(1.5, 4.5)
             ).fmap(lambda pr: (p, pr)))
 
-    row = tupled(formation, a_h_v, phase_price)
+    row = tupled(formation, a_h_v, phase_price, area)
 
     r = Random(12345)
     for i in range(100):
