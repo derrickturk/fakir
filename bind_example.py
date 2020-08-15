@@ -1,4 +1,4 @@
-from fakir2 import fixed, normal, repeat
+from fakir import fixed, normal, repeat
 from random import Random
 import sys
 

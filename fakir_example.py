@@ -11,25 +11,20 @@ def main(argv: List[str]) -> int:
     formation = animal + fixed(' ') + geo
 
     area = normal(40, 10)
-    some_other_area = area
-    area = area.lock()
-    height = uniform(10, 100).lock()
+    height = uniform(10, 100)
     volume = area * height
 
-    phase = choice(['Oil', 'Gas']).lock()
+    phase = choice(['Oil', 'Gas'])
     price = ifelse(phase == fixed('Oil'),
         uniform(30, 60),
         uniform(1.5, 4.5)
     )
 
-    row = tupled(formation, area, height, volume, phase, price, some_other_area)
+    row = tupled(formation, area, height, volume, phase, price, area.iid(), price.iid())
 
     r = Random(12345)
     for i in range(100):
         print(row.generate(r))
-        area.clear()
-        height.clear()
-        phase.clear()
 
     return 0
 
