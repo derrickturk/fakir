@@ -3,11 +3,12 @@ from copy import deepcopy
 from abc import ABC
 import operator
 
-from typing import cast
-from typing import Any, Callable, Dict, Generic, List, Optional, Tuple, TypeVar
+from typing import cast, Any, Callable, Dict, Generic, List, Optional, Tuple
+from typing import TypeVar, Union
 
-_T = TypeVar('_T')
-_U = TypeVar('_U')
+_T = TypeVar('_T', covariant=True)
+_U = TypeVar('_U', covariant=True)
+_V = TypeVar('_V') # sometimes uneeda invariant type var
 
 class Fakir(ABC, Generic[_T]):
     # default implementation is a memoized call to self.generate1 
@@ -25,12 +26,8 @@ class Fakir(ABC, Generic[_T]):
     def generate1(self, r: Random) -> _T:
         raise NotImplementedError
 
-    def fmap(self, f: Callable[[_T], _U]) -> 'Fakir[_U]':
-        return FnFakir(lambda r, cache: f(self._generate(r, cache)))
-
-    def bind(self, f: Callable[[_T], 'Fakir[_U]']) -> 'Fakir[_U]':
-        return FnFakir(
-          lambda r, cache: f(self._generate(r, cache))._generate(r, cache))
+    def map(self, f: Callable[[_T], _U]) -> 'Fakir[_U]':
+        return LiftFakir(f, self)
 
     # an independent draw from the same distribution
     def clone(self) -> 'Fakir[_T]':
@@ -105,27 +102,25 @@ class Fakir(ABC, Generic[_T]):
         return Fakir.lift(operator.concat, self, other)
 
     def __inv__(self) -> 'Fakir[Any]':
-        return self.fmap(operator.inv)
+        return self.map(operator.inv)
 
     def __abs__(self) -> 'Fakir[Any]':
-        return self.fmap(operator.abs) # type: ignore
+        return self.map(operator.abs) # type: ignore
 
     def __neg__(self) -> 'Fakir[Any]':
-        return self.fmap(operator.neg)
+        return self.map(operator.neg)
 
     def __bool__(self) -> 'Fakir[bool]':
-        return self.fmap(operator.truth)
+        return self.map(operator.truth)
 
     @staticmethod
     def lift(fn: Callable[..., _U], *args: 'Fakir[Any]') -> 'Fakir[_U]':
-        return FnFakir(
-          lambda r, cache: fn(*(arg._generate(r, cache) for arg in args)))
+        return LiftFakir(fn, *args)
 
     @staticmethod
     def liftList(fn: Callable[[List[Any]], _U],
             *args: 'Fakir[Any]') -> 'Fakir[_U]':
-        return FnFakir(
-          lambda r, cache: fn([arg._generate(r, cache) for arg in args]))
+        return LiftFakir(lambda *args: fn(list(args)), *args)
 
 class ConstFakir(Fakir[_T]):
     def __init__(self, val: _T):
@@ -147,6 +142,25 @@ class Fn1Fakir(Fakir[_T]):
 
     def generate1(self, r: Random) -> _T:
         return self._fn(r)
+
+class LiftFakir(Fakir[_T]):
+    def __init__(self, fn: Callable[..., _T], *args: Fakir[Any]):
+        self._fn = fn
+        self._args = args
+
+    def _generate(self, r: Random, cache: Dict[int, Any]) -> _T:
+        return self._fn(*(arg._generate(r, cache) for arg in self._args))
+
+class CondFakir(Fakir[Union[_T, _U]]):
+    def __init__(self, cond: Fakir[bool], f_if: Fakir[_T], f_else: Fakir[_U]):
+        self._cond = cond
+        self._f_if = f_if
+        self._f_else = f_else
+
+    def _generate(self, r: Random, cache: Dict[int, Any]) -> Union[_T, _U]:
+        if self._cond._generate(r, cache):
+            return self._f_if._generate(r, cache)
+        return self._f_else._generate(r, cache)
 
 class ChoiceFakir(Fakir[_T]):
     def __init__(self, choices: List[_T]):
@@ -174,7 +188,7 @@ class PermuteFakir(Fakir[List[_T]]):
     def generate1(self, r: Random) -> List[_T]:
         return r.sample(self._choices, self._choose)
 
-def fixed(val: _T) -> Fakir[_T]:
+def fixed(val: _V) -> Fakir[_V]:
     return ConstFakir(val)
 
 def rng_fn(fn: Callable[[Random], _T]) -> Fakir[_T]:
@@ -209,6 +223,6 @@ def repeat(fakir: Fakir[_T], count: int) -> Fakir[List[_T]]:
     return FnFakir(
       lambda r, _: [fakir.generate(r) for _ in range(count)])
 
-def ifelse(cond: Fakir[bool], ifTrue: Fakir[_T], ifFalse: Fakir[_T]
-        ) -> Fakir[_T]:
-    return cond.bind(lambda c: ifTrue if c else ifFalse)
+def ifelse(cond: Fakir[bool], ifTrue: Fakir[_T], ifFalse: Fakir[_U]
+        ) -> Fakir[Union[_T, _U]]:
+    return CondFakir(cond, ifTrue, ifFalse)
