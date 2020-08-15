@@ -1,3 +1,6 @@
+# fakir: a library for fast faking
+# (c) 2020 dwt | terminus data science, LLC
+
 from random import Random
 from copy import deepcopy
 import operator
@@ -222,5 +225,8 @@ def repeat(fakir: Fakir[_T], count: int) -> Fakir[List[_T]]:
 
 def ifelse(cond: Fakir[bool], ifTrue: Fakir[_T], ifFalse: Fakir[_U]
         ) -> Fakir[Union[_T, _U]]:
-    return cond.bind(
-      lambda c: ifTrue.iid() if c else ifFalse.iid()) # type: ignore
+    def ifElse(cond: bool) -> Fakir[Union[_T, _U]]:
+        if cond:
+            return ifTrue.iid()
+        return ifFalse.iid()
+    return cond.bind(ifElse)
