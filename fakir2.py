@@ -1,6 +1,5 @@
 from random import Random
 from copy import deepcopy
-from abc import ABC
 import operator
 
 from typing import cast, Any, Callable, Dict, Generic, List, Optional, Tuple
@@ -10,7 +9,7 @@ _T = TypeVar('_T', covariant=True)
 _U = TypeVar('_U', covariant=True)
 _V = TypeVar('_V') # sometimes uneeda invariant type var
 
-class Fakir(ABC, Generic[_T]):
+class Fakir(Generic[_T]):
     # default implementation is a memoized call to self.generate1 
     def _generate(self, r: Random, cache: Dict[int, Any]) -> _T:
         self_id = id(self)
