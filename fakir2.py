@@ -161,17 +161,6 @@ class BindFakir(Fakir[_U]):
     def _generate(self, r: Random, cache: Dict[int, Any]) -> _U:
         return self._fn(self._fakir._generate(r, cache))._generate(r, cache)
 
-class CondFakir(Fakir[Union[_T, _U]]):
-    def __init__(self, cond: Fakir[bool], f_if: Fakir[_T], f_else: Fakir[_U]):
-        self._cond = cond
-        self._f_if = f_if
-        self._f_else = f_else
-
-    def _generate(self, r: Random, cache: Dict[int, Any]) -> Union[_T, _U]:
-        if self._cond._generate(r, cache):
-            return self._f_if._generate(r, cache)
-        return self._f_else._generate(r, cache)
-
 class ChoiceFakir(Fakir[_T]):
     def __init__(self, choices: List[_T]):
         self._choices = choices
@@ -233,4 +222,4 @@ def repeat(fakir: Fakir[_T], count: int) -> Fakir[List[_T]]:
 
 def ifelse(cond: Fakir[bool], ifTrue: Fakir[_T], ifFalse: Fakir[_U]
         ) -> Fakir[Union[_T, _U]]:
-    return CondFakir(cond, ifTrue, ifFalse)
+    return cond.bind(lambda c: ifTrue.iid() if c else ifFalse.iid())
