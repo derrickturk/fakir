@@ -217,10 +217,8 @@ def tupled(*args: Fakir[Any]) -> Fakir[Tuple[Any, ...]]:
 def listed(*args: Fakir[Any]) -> Fakir[List[Any]]:
     return Fakir.liftList(lambda xs: xs, *args)
 
-# start with an empty cache for each repetition
 def repeat(fakir: Fakir[_T], count: int) -> Fakir[List[_T]]:
-    return FnFakir(
-      lambda r, _: [fakir.generate(r) for _ in range(count)])
+    return listed(*(fakir.iid() for _ in range(count)))
 
 def ifelse(cond: Fakir[bool], ifTrue: Fakir[_T], ifFalse: Fakir[_U]
         ) -> Fakir[Union[_T, _U]]:
