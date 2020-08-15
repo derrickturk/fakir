@@ -29,7 +29,7 @@ class Fakir(Generic[_T]):
         return LiftFakir(f, self)
 
     # an independent draw from the same distribution
-    def clone(self) -> 'Fakir[_T]':
+    def iid(self) -> 'Fakir[_T]':
         return deepcopy(self)
 
     def __lt__(self, other: 'Fakir[Any]') -> 'Fakir[Any]':
