@@ -21,7 +21,9 @@ def main(argv: List[str]) -> int:
         uniform(1.5, 4.5)
     )
 
-    row = tupled(formation, area, height, volume, phase, price, some_other_area)
+    price2 = price.clone()
+
+    row = tupled(formation, area, height, volume, phase, price, some_other_area, price2)
 
     r = Random(12345)
     for i in range(100):
