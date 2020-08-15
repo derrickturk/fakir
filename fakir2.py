@@ -28,6 +28,9 @@ class Fakir(Generic[_T]):
     def map(self, f: Callable[[_T], _U]) -> 'Fakir[_U]':
         return LiftFakir(f, self)
 
+    def bind(self, f: Callable[[_T], 'Fakir[_U]']) -> 'Fakir[_U]':
+        return BindFakir(self, f)
+
     # an independent draw from the same distribution
     def iid(self) -> 'Fakir[_T]':
         return deepcopy(self)
@@ -149,6 +152,14 @@ class LiftFakir(Fakir[_T]):
 
     def _generate(self, r: Random, cache: Dict[int, Any]) -> _T:
         return self._fn(*(arg._generate(r, cache) for arg in self._args))
+
+class BindFakir(Fakir[_U]):
+    def __init__(self, fakir: Fakir[_T], fn: Callable[[_T], Fakir[_U]]):
+            self._fakir = fakir
+            self._fn = fn
+
+    def _generate(self, r: Random, cache: Dict[int, Any]) -> _U:
+        return self._fn(self._fakir._generate(r, cache))._generate(r, cache)
 
 class CondFakir(Fakir[Union[_T, _U]]):
     def __init__(self, cond: Fakir[bool], f_if: Fakir[_T], f_else: Fakir[_U]):
