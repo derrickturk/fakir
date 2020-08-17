@@ -300,6 +300,20 @@ def normal(mu: float, sigma: float) -> Fakir[float]:
     centered on mu with standard deviation sigma'''
     return Fn1Fakir(lambda r: r.normalvariate(mu, sigma))
 
+def truncated_normal(mu: float, sigma: float, a: Optional[float] = None,
+        b: Optional[float] = None) -> Fakir[float]:
+    '''construct a Fakir which generates values from a truncated normal
+    distribution centered on mu with standard deviation sigma, (optionally)
+    bounded from below and above by a and b
+    
+    uses inefficient but reliable rejection sampling'''
+    def tnorm(r: Random) -> float:
+        while True:
+            val = r.normalvariate(mu, sigma)
+            if (a is None or val >= a) and (b is None or val <= b):
+                return val
+    return Fn1Fakir(tnorm)
+
 def lognormal(mu: float, sigma: float) -> Fakir[float]:
     '''construct a Fakir which generates values whose natural logarithms are
     taken from a normal distribution centered on mu with standard
