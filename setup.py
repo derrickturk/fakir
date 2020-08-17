@@ -1,17 +1,18 @@
-from distutils.core import setup
+import setuptools
 
 with open('README.md', 'r') as f:
     long_description = f.read()
 
-setup(
+setuptools.setup(
     name='fakir',
     description='a mildly monadic module for fast faking',
     long_description=long_description,
     long_description_content_type='text/markdown',
     author='Derrick W. Turk',
+    author_email='dwt@terminusdatascience.com',
     url='https://github.com/derrickturk/fakir',
     version='0.1',
-    py_modules=['fakir'],
+    packages=setuptools.find_packages(),
     classifiers=[
         'License :: OSI Approved :: Apache Software License',
         'Programming Language :: Python :: 3.6',
@@ -21,4 +22,5 @@ setup(
     ],
     python_requires='>=3.6',
     package_data={'fakir': ['py.typed']},
+    zip_safe=False,
 )
