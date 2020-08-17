@@ -63,6 +63,7 @@ Why is this a "package" and not a "module"? PEP 561 says that's the only way to 
 View the full [pdoc3-generated API documentation](https://ghcdn.rawgit.org/derrickturk/fakir/master/doc/fakir/index.html).
 
 Install with:
+
     pip install fakir
 
 Or download directly [from PyPI](https://pypi.org/project/fakir/).
