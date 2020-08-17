@@ -380,3 +380,12 @@ def ifelse(cond: Fakir[bool], ifTrue: Fakir[_T], ifFalse: Fakir[_U]
 __pdoc__ = {
         'Fakir._generate': True,
 }
+
+__all__ = [
+    'Fakir', 'ConstFakir', 'FnFakir', 'Fn1Fakir', 'LiftFakir', 'BindFakir',
+    'ChoiceFakir', 'BootstrapFakir', 'PermuteFakir',
+    'fixed', 'rng_fn', 'choice', 'bootstrap', 'permute', 'uniform', 'uniform1',
+    'normal', 'truncated_normal', 'lognormal', 'triangular', 'beta',
+    'exponential', 'gamma', 'pareto', 'weibull', 'tupled', 'listed', 'repeat',
+    'ifelse'
+]
