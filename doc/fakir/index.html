@@ -19,7 +19,7 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>fakir</code></h1>
+<h1 class="title">Package <code>fakir</code></h1>
 </header>
 <section id="section-intro">
 <details class="source">
@@ -327,6 +327,20 @@ def normal(mu: float, sigma: float) -&gt; Fakir[float]:
     &#39;&#39;&#39;construct a Fakir which generates values from a normal distribution
     centered on mu with standard deviation sigma&#39;&#39;&#39;
     return Fn1Fakir(lambda r: r.normalvariate(mu, sigma))
+
+def truncated_normal(mu: float, sigma: float, a: Optional[float] = None,
+        b: Optional[float] = None) -&gt; Fakir[float]:
+    &#39;&#39;&#39;construct a Fakir which generates values from a truncated normal
+    distribution centered on mu with standard deviation sigma, (optionally)
+    bounded from below and above by a and b
+    
+    uses inefficient but reliable rejection sampling&#39;&#39;&#39;
+    def tnorm(r: Random) -&gt; float:
+        while True:
+            val = r.normalvariate(mu, sigma)
+            if (a is None or val &gt;= a) and (b is None or val &lt;= b):
+                return val
+    return Fn1Fakir(tnorm)
 
 def lognormal(mu: float, sigma: float) -&gt; Fakir[float]:
     &#39;&#39;&#39;construct a Fakir which generates values whose natural logarithms are
@@ -640,6 +654,33 @@ between low and high, with given mode</p></div>
     &#39;&#39;&#39;construct a Fakir which generates values from a triangular distribution
     between low and high, with given mode&#39;&#39;&#39;
     return Fn1Fakir(lambda r: r.triangular(low, high, mode))</code></pre>
+</details>
+</dd>
+<dt id="fakir.truncated_normal"><code class="name flex">
+<span>def <span class="ident">truncated_normal</span></span>(<span>mu: float, sigma: float, a: Union[float, NoneType] = None, b: Union[float, NoneType] = None) ‑> <a title="fakir.Fakir" href="#fakir.Fakir">Fakir</a>[float]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>construct a Fakir which generates values from a truncated normal
+distribution centered on mu with standard deviation sigma, (optionally)
+bounded from below and above by a and b</p>
+<p>uses inefficient but reliable rejection sampling</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def truncated_normal(mu: float, sigma: float, a: Optional[float] = None,
+        b: Optional[float] = None) -&gt; Fakir[float]:
+    &#39;&#39;&#39;construct a Fakir which generates values from a truncated normal
+    distribution centered on mu with standard deviation sigma, (optionally)
+    bounded from below and above by a and b
+    
+    uses inefficient but reliable rejection sampling&#39;&#39;&#39;
+    def tnorm(r: Random) -&gt; float:
+        while True:
+            val = r.normalvariate(mu, sigma)
+            if (a is None or val &gt;= a) and (b is None or val &lt;= b):
+                return val
+    return Fn1Fakir(tnorm)</code></pre>
 </details>
 </dd>
 <dt id="fakir.tupled"><code class="name flex">
@@ -1422,6 +1463,7 @@ without replacement</p></div>
 <li><code><a title="fakir.repeat" href="#fakir.repeat">repeat</a></code></li>
 <li><code><a title="fakir.rng_fn" href="#fakir.rng_fn">rng_fn</a></code></li>
 <li><code><a title="fakir.triangular" href="#fakir.triangular">triangular</a></code></li>
+<li><code><a title="fakir.truncated_normal" href="#fakir.truncated_normal">truncated_normal</a></code></li>
 <li><code><a title="fakir.tupled" href="#fakir.tupled">tupled</a></code></li>
 <li><code><a title="fakir.uniform" href="#fakir.uniform">uniform</a></code></li>
 <li><code><a title="fakir.uniform1" href="#fakir.uniform1">uniform1</a></code></li>

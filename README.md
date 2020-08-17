@@ -58,5 +58,7 @@ had written (using the phase and price produced "tupled" by `phase_price`):
 To "opt out" of this implicit bind, clone Fakir objects into independent
 identically distributed objects with the `iid` method.
 
+Why is this a "package" and not a "module"? PEP 561 says that's the only way to get type information distributed (with `py.typed`). Someone who actually cares enough to bother should start a petition or something, because this kind of unbridled complexity addiction is what's destroying Python and the last shreds of my sanity.
+
 ### (c) 2020 dwt | terminus data science, LLC
 ### available under the Apache License 2.0
