@@ -290,6 +290,11 @@ def uniform(a: float, b: float) -> Fakir[float]:
     distribution on [a, b]'''
     return Fn1Fakir(lambda r: r.uniform(a, b))
 
+def uniform1() -> Fakir[float]:
+    '''construct a Fakir which generates values from a uniform
+    distribution on [0, 1)'''
+    return Fn1Fakir(Random.random)
+
 def normal(mu: float, sigma: float) -> Fakir[float]:
     '''construct a Fakir which generates values from a normal distribution
     centered on mu with standard deviation sigma'''
@@ -300,6 +305,36 @@ def lognormal(mu: float, sigma: float) -> Fakir[float]:
     taken from a normal distribution centered on mu with standard
     deviation sigma'''
     return Fn1Fakir(lambda r: r.lognormvariate(mu, sigma))
+
+def triangular(low: float, high: float, mode: float) -> Fakir[float]:
+    '''construct a Fakir which generates values from a triangular distribution
+    between low and high, with given mode'''
+    return Fn1Fakir(lambda r: r.triangular(low, high, mode))
+
+def beta(alpha: float, beta: float) -> Fakir[float]:
+    '''construct a Fakir which generates values from a beta distribution
+    with given alpha and beta'''
+    return Fn1Fakir(lambda r: r.betavariate(alpha, beta))
+
+def exponential(lambda_: float) -> Fakir[float]:
+    '''construct a Fakir which generates values from an exponential distribution
+    with given lambda'''
+    return Fn1Fakir(lambda r: r.expovariate(lambda_))
+
+def gamma(alpha: float, beta: float) -> Fakir[float]:
+    '''construct a Fakir which generates values from a gamma distribution
+    with given alpha and beta'''
+    return Fn1Fakir(lambda r: r.gammavariate(alpha, beta))
+
+def pareto(alpha: float) -> Fakir[float]:
+    '''construct a Fakir which generates values from a Pareto distribution
+    with given alpha'''
+    return Fn1Fakir(lambda r: r.paretovariate(alpha))
+
+def weibull(alpha: float, beta: float) -> Fakir[float]:
+    '''construct a Fakir which generates values from a Weibull distribution
+    with given alpha and beta'''
+    return Fn1Fakir(lambda r: r.weibullvariate(alpha, beta))
 
 def tupled(*args: Fakir[Any]) -> Fakir[Tuple[Any, ...]]:
     '''construct a Fakir which generates tuples of samples from each argument
