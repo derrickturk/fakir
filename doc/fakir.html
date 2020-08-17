@@ -318,6 +318,11 @@ def uniform(a: float, b: float) -&gt; Fakir[float]:
     distribution on [a, b]&#39;&#39;&#39;
     return Fn1Fakir(lambda r: r.uniform(a, b))
 
+def uniform1() -&gt; Fakir[float]:
+    &#39;&#39;&#39;construct a Fakir which generates values from a uniform
+    distribution on [0, 1)&#39;&#39;&#39;
+    return Fn1Fakir(Random.random)
+
 def normal(mu: float, sigma: float) -&gt; Fakir[float]:
     &#39;&#39;&#39;construct a Fakir which generates values from a normal distribution
     centered on mu with standard deviation sigma&#39;&#39;&#39;
@@ -328,6 +333,36 @@ def lognormal(mu: float, sigma: float) -&gt; Fakir[float]:
     taken from a normal distribution centered on mu with standard
     deviation sigma&#39;&#39;&#39;
     return Fn1Fakir(lambda r: r.lognormvariate(mu, sigma))
+
+def triangular(low: float, high: float, mode: float) -&gt; Fakir[float]:
+    &#39;&#39;&#39;construct a Fakir which generates values from a triangular distribution
+    between low and high, with given mode&#39;&#39;&#39;
+    return Fn1Fakir(lambda r: r.triangular(low, high, mode))
+
+def beta(alpha: float, beta: float) -&gt; Fakir[float]:
+    &#39;&#39;&#39;construct a Fakir which generates values from a beta distribution
+    with given alpha and beta&#39;&#39;&#39;
+    return Fn1Fakir(lambda r: r.betavariate(alpha, beta))
+
+def exponential(lambda_: float) -&gt; Fakir[float]:
+    &#39;&#39;&#39;construct a Fakir which generates values from an exponential distribution
+    with given lambda&#39;&#39;&#39;
+    return Fn1Fakir(lambda r: r.expovariate(lambda_))
+
+def gamma(alpha: float, beta: float) -&gt; Fakir[float]:
+    &#39;&#39;&#39;construct a Fakir which generates values from a gamma distribution
+    with given alpha and beta&#39;&#39;&#39;
+    return Fn1Fakir(lambda r: r.gammavariate(alpha, beta))
+
+def pareto(alpha: float) -&gt; Fakir[float]:
+    &#39;&#39;&#39;construct a Fakir which generates values from a Pareto distribution
+    with given alpha&#39;&#39;&#39;
+    return Fn1Fakir(lambda r: r.paretovariate(alpha))
+
+def weibull(alpha: float, beta: float) -&gt; Fakir[float]:
+    &#39;&#39;&#39;construct a Fakir which generates values from a Weibull distribution
+    with given alpha and beta&#39;&#39;&#39;
+    return Fn1Fakir(lambda r: r.weibullvariate(alpha, beta))
 
 def tupled(*args: Fakir[Any]) -&gt; Fakir[Tuple[Any, ...]]:
     &#39;&#39;&#39;construct a Fakir which generates tuples of samples from each argument
@@ -368,6 +403,22 @@ __pdoc__ = {
 <section>
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
+<dt id="fakir.beta"><code class="name flex">
+<span>def <span class="ident">beta</span></span>(<span>alpha: float, beta: float) ‑> <a title="fakir.Fakir" href="#fakir.Fakir">Fakir</a>[float]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>construct a Fakir which generates values from a beta distribution
+with given alpha and beta</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def beta(alpha: float, beta: float) -&gt; Fakir[float]:
+    &#39;&#39;&#39;construct a Fakir which generates values from a beta distribution
+    with given alpha and beta&#39;&#39;&#39;
+    return Fn1Fakir(lambda r: r.betavariate(alpha, beta))</code></pre>
+</details>
+</dd>
 <dt id="fakir.bootstrap"><code class="name flex">
 <span>def <span class="ident">bootstrap</span></span>(<span>choices: List[+_T], count: int) ‑> <a title="fakir.Fakir" href="#fakir.Fakir">Fakir</a>[typing.List[+_T]]</span>
 </code></dt>
@@ -396,6 +447,22 @@ __pdoc__ = {
     return ChoiceFakir(choices)</code></pre>
 </details>
 </dd>
+<dt id="fakir.exponential"><code class="name flex">
+<span>def <span class="ident">exponential</span></span>(<span>lambda_: float) ‑> <a title="fakir.Fakir" href="#fakir.Fakir">Fakir</a>[float]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>construct a Fakir which generates values from an exponential distribution
+with given lambda</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def exponential(lambda_: float) -&gt; Fakir[float]:
+    &#39;&#39;&#39;construct a Fakir which generates values from an exponential distribution
+    with given lambda&#39;&#39;&#39;
+    return Fn1Fakir(lambda r: r.expovariate(lambda_))</code></pre>
+</details>
+</dd>
 <dt id="fakir.fixed"><code class="name flex">
 <span>def <span class="ident">fixed</span></span>(<span>val: ~_V) ‑> <a title="fakir.Fakir" href="#fakir.Fakir">Fakir</a>[~_V]</span>
 </code></dt>
@@ -408,6 +475,22 @@ __pdoc__ = {
 <pre><code class="python">def fixed(val: _V) -&gt; Fakir[_V]:
     &#39;&#39;&#39;construct a Fakir which generates a fixed value&#39;&#39;&#39;
     return ConstFakir(val)</code></pre>
+</details>
+</dd>
+<dt id="fakir.gamma"><code class="name flex">
+<span>def <span class="ident">gamma</span></span>(<span>alpha: float, beta: float) ‑> <a title="fakir.Fakir" href="#fakir.Fakir">Fakir</a>[float]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>construct a Fakir which generates values from a gamma distribution
+with given alpha and beta</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def gamma(alpha: float, beta: float) -&gt; Fakir[float]:
+    &#39;&#39;&#39;construct a Fakir which generates values from a gamma distribution
+    with given alpha and beta&#39;&#39;&#39;
+    return Fn1Fakir(lambda r: r.gammavariate(alpha, beta))</code></pre>
 </details>
 </dd>
 <dt id="fakir.ifelse"><code class="name flex">
@@ -483,6 +566,22 @@ centered on mu with standard deviation sigma</p></div>
     return Fn1Fakir(lambda r: r.normalvariate(mu, sigma))</code></pre>
 </details>
 </dd>
+<dt id="fakir.pareto"><code class="name flex">
+<span>def <span class="ident">pareto</span></span>(<span>alpha: float) ‑> <a title="fakir.Fakir" href="#fakir.Fakir">Fakir</a>[float]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>construct a Fakir which generates values from a Pareto distribution
+with given alpha</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def pareto(alpha: float) -&gt; Fakir[float]:
+    &#39;&#39;&#39;construct a Fakir which generates values from a Pareto distribution
+    with given alpha&#39;&#39;&#39;
+    return Fn1Fakir(lambda r: r.paretovariate(alpha))</code></pre>
+</details>
+</dd>
 <dt id="fakir.permute"><code class="name flex">
 <span>def <span class="ident">permute</span></span>(<span>choices: List[+_T], choose: Union[int, NoneType] = None) ‑> <a title="fakir.Fakir" href="#fakir.Fakir">Fakir</a>[typing.List[+_T]]</span>
 </code></dt>
@@ -527,6 +626,22 @@ distributed samples from the same underlying Fakir</p></div>
     return Fn1Fakir(fn)</code></pre>
 </details>
 </dd>
+<dt id="fakir.triangular"><code class="name flex">
+<span>def <span class="ident">triangular</span></span>(<span>low: float, high: float, mode: float) ‑> <a title="fakir.Fakir" href="#fakir.Fakir">Fakir</a>[float]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>construct a Fakir which generates values from a triangular distribution
+between low and high, with given mode</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def triangular(low: float, high: float, mode: float) -&gt; Fakir[float]:
+    &#39;&#39;&#39;construct a Fakir which generates values from a triangular distribution
+    between low and high, with given mode&#39;&#39;&#39;
+    return Fn1Fakir(lambda r: r.triangular(low, high, mode))</code></pre>
+</details>
+</dd>
 <dt id="fakir.tupled"><code class="name flex">
 <span>def <span class="ident">tupled</span></span>(<span>*args: <a title="fakir.Fakir" href="#fakir.Fakir">Fakir</a>[typing.Any]) ‑> <a title="fakir.Fakir" href="#fakir.Fakir">Fakir</a>[typing.Tuple[typing.Any, ...]]</span>
 </code></dt>
@@ -557,6 +672,38 @@ distribution on [a, b]</p></div>
     &#39;&#39;&#39;construct a Fakir which generates values from a uniform
     distribution on [a, b]&#39;&#39;&#39;
     return Fn1Fakir(lambda r: r.uniform(a, b))</code></pre>
+</details>
+</dd>
+<dt id="fakir.uniform1"><code class="name flex">
+<span>def <span class="ident">uniform1</span></span>(<span>) ‑> <a title="fakir.Fakir" href="#fakir.Fakir">Fakir</a>[float]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>construct a Fakir which generates values from a uniform
+distribution on [0, 1)</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def uniform1() -&gt; Fakir[float]:
+    &#39;&#39;&#39;construct a Fakir which generates values from a uniform
+    distribution on [0, 1)&#39;&#39;&#39;
+    return Fn1Fakir(Random.random)</code></pre>
+</details>
+</dd>
+<dt id="fakir.weibull"><code class="name flex">
+<span>def <span class="ident">weibull</span></span>(<span>alpha: float, beta: float) ‑> <a title="fakir.Fakir" href="#fakir.Fakir">Fakir</a>[float]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>construct a Fakir which generates values from a Weibull distribution
+with given alpha and beta</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def weibull(alpha: float, beta: float) -&gt; Fakir[float]:
+    &#39;&#39;&#39;construct a Fakir which generates values from a Weibull distribution
+    with given alpha and beta&#39;&#39;&#39;
+    return Fn1Fakir(lambda r: r.weibullvariate(alpha, beta))</code></pre>
 </details>
 </dd>
 </dl>
@@ -1260,18 +1407,25 @@ without replacement</p></div>
 <ul id="index">
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="two-column">
+<li><code><a title="fakir.beta" href="#fakir.beta">beta</a></code></li>
 <li><code><a title="fakir.bootstrap" href="#fakir.bootstrap">bootstrap</a></code></li>
 <li><code><a title="fakir.choice" href="#fakir.choice">choice</a></code></li>
+<li><code><a title="fakir.exponential" href="#fakir.exponential">exponential</a></code></li>
 <li><code><a title="fakir.fixed" href="#fakir.fixed">fixed</a></code></li>
+<li><code><a title="fakir.gamma" href="#fakir.gamma">gamma</a></code></li>
 <li><code><a title="fakir.ifelse" href="#fakir.ifelse">ifelse</a></code></li>
 <li><code><a title="fakir.listed" href="#fakir.listed">listed</a></code></li>
 <li><code><a title="fakir.lognormal" href="#fakir.lognormal">lognormal</a></code></li>
 <li><code><a title="fakir.normal" href="#fakir.normal">normal</a></code></li>
+<li><code><a title="fakir.pareto" href="#fakir.pareto">pareto</a></code></li>
 <li><code><a title="fakir.permute" href="#fakir.permute">permute</a></code></li>
 <li><code><a title="fakir.repeat" href="#fakir.repeat">repeat</a></code></li>
 <li><code><a title="fakir.rng_fn" href="#fakir.rng_fn">rng_fn</a></code></li>
+<li><code><a title="fakir.triangular" href="#fakir.triangular">triangular</a></code></li>
 <li><code><a title="fakir.tupled" href="#fakir.tupled">tupled</a></code></li>
 <li><code><a title="fakir.uniform" href="#fakir.uniform">uniform</a></code></li>
+<li><code><a title="fakir.uniform1" href="#fakir.uniform1">uniform1</a></code></li>
+<li><code><a title="fakir.weibull" href="#fakir.weibull">weibull</a></code></li>
 </ul>
 </li>
 <li><h3><a href="#header-classes">Classes</a></h3>
