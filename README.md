@@ -60,7 +60,7 @@ identically distributed objects with the `iid` method.
 
 Why is this a "package" and not a "module"? PEP 561 says that's the only way to get type information distributed (with `py.typed`). Someone who actually cares enough to bother should start a petition or something, because this kind of unbridled complexity addiction is what's destroying Python and the last shreds of my sanity.
 
-View the full [pdoc3-generated API documentation](https://ghcdn.rawgit.org/derrickturk/fakir/master/doc/fakir/index.html).
+View the full [pdocs-generated API documentation](https://ghcdn.rawgit.org/derrickturk/fakir/fee8ffa528c757f7335e5676a6dc44e792fa635b/doc/fakir.html).
 
 Install with:
 
